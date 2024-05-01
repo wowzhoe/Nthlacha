@@ -1,6 +1,8 @@
 using CodeFirst;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 namespace CodeFirst.Gameplay
 {
@@ -10,6 +12,7 @@ namespace CodeFirst.Gameplay
         [SerializeField] private GameObject cardList;
         [SerializeField] private Sprite[] sprites;
         [SerializeField] private Sprite spriteBack;
+        [SerializeField] private Text scoreField;
 
         private Board board;
 
@@ -30,6 +33,11 @@ namespace CodeFirst.Gameplay
         {
             Load(5, 5);
             Initialize();
+        }
+
+        private void Update()
+        {
+            scoreField.text = "Score: " + (board.mapping.cards.Length - cardLeft) / 2;
         }
 
         private void Initialize()
@@ -222,6 +230,9 @@ namespace CodeFirst.Gameplay
 
         public void OnClickLoad()
         {
+            cardSelected = spriteSelected = -1;
+            cardLeft = board.mapping.cards.Length;
+            
             var result = System.IO.File.ReadAllText(Application.streamingAssetsPath + "/LastBoardData.json");
             board = null;
             board = JsonUtility.FromJson<Board>(result);
@@ -259,7 +270,11 @@ namespace CodeFirst.Gameplay
                         board.mapping.cards[index].view = view;
 
                         c.name = "ID : " + board.mapping.cards[index].mapping.id + " | x : " + board.mapping.cards[index].mapping.x + " | y: " + board.mapping.cards[index].mapping.y;
-                        if (board.mapping.cards[index].mapping.flipped) board.mapping.cards[index].view.Inactive();
+                        if (board.mapping.cards[index].mapping.flipped)
+                        {
+                            board.mapping.cards[index].view.Inactive();
+                            cardLeft--;
+                        }
 
                         c.transform.localScale = new Vector3(scale, scale);
                         c.transform.localPosition = new Vector3(board.mapping.cards[index].mapping.x, board.mapping.cards[index].mapping.y, 0);
@@ -268,9 +283,7 @@ namespace CodeFirst.Gameplay
                     }
                 }
             }
-
-            cardSelected = spriteSelected = -1;
-            cardLeft = board.mapping.cards.Length;
+            
             StartCoroutine(AnimationExtention.HideBoard(board.mapping.cards));
 
             for (int i = 0; i < board.mapping.cards.Length; i++)
