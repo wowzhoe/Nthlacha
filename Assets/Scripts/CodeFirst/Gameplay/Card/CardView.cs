@@ -29,7 +29,7 @@ namespace CodeFirst.Gameplay
 
         public void Change() => base.Change(card, img);
 
-        public void Inactive() => base.Deactivate(img);
+        public void Inactive() => base.Deactivate(card, img);
 
         public void Active() => base.Activate(img);
 

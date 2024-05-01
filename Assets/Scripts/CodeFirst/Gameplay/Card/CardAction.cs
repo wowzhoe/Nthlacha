@@ -21,8 +21,9 @@ namespace CodeFirst.Gameplay
                 img.sprite = BoardLoader.Instance.CardBack();
         }
 
-        public void Deactivate(Image img)
+        public void Deactivate(Card card, Image img)
         {
+            card.mapping.played = true;
             StartCoroutine(AnimationExtention.FadeTo(img));
         }
 

@@ -195,6 +195,10 @@ namespace CodeFirst.Gameplay
                 {
                     board.mapping.cards[cardSelected].view.Inactive();
                     board.mapping.cards[cardId].view.Inactive();
+
+                    board.mapping.cards[cardSelected].mapping.played = true;
+                    board.mapping.cards[cardId].mapping.played = true;
+
                     cardLeft -= 2;
 
                     AudioPlayer.Instance.PlayAudio(cardLeft == 0 ? 1 : 2);
@@ -259,7 +263,7 @@ namespace CodeFirst.Gameplay
                         board.mapping.cards[index].view = view;
 
                         c.name = "ID : " + board.mapping.cards[index].mapping.id + " | x : " + board.mapping.cards[index].mapping.x + " | y: " + board.mapping.cards[index].mapping.y;
-                        if (board.mapping.cards[index].mapping.flipped)
+                        if (board.mapping.cards[index].mapping.played)
                         {
                             board.mapping.cards[index].view.Inactive();
                             cardLeft--;
