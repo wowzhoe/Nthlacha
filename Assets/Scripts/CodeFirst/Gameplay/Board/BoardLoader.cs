@@ -29,8 +29,7 @@ namespace CodeFirst.Gameplay
 
         private void Start()
         {
-            Load(5, 5);
-            Initialize();
+            OnClickUpdate();
         }
 
         private void Update()
@@ -42,8 +41,6 @@ namespace CodeFirst.Gameplay
         {
             cardSelected = spriteSelected = -1;
             cardLeft = board.mapping.cards.Length;
-
-            BoardAllocation();
             StartCoroutine(AnimationExtention.HideBoard(board.mapping.cards));
         }
 
@@ -178,11 +175,10 @@ namespace CodeFirst.Gameplay
                 for (j = 0; j < 2; j++)
                 {
                     int value = Random.Range(0, board.mapping.cards.Length - 1);
-                    while (board.mapping.cards[value].view.SpriteID != -1) //.view.SpriteID
+                    while (board.mapping.cards[value].view.SpriteID != -1)
                         value = (value + 1) % board.mapping.cards.Length;
 
                     board.mapping.cards[value].view.SpriteID = selectedID[i];
-                    //board.mapping.cards[value].mapping.spriteID = selectedID[i];
                 }
         }
 
@@ -214,25 +210,21 @@ namespace CodeFirst.Gameplay
             }
         }
 
-        public void OnClickStart()
+        public void OnClickUpdate()
         {
-
+            Load(5, 5);
+            Initialize();
+            BoardAllocation();
         }
 
         public void OnClickSave()
         {
-            string potion = JsonUtility.ToJson(board);
-            System.IO.File.WriteAllText(Application.streamingAssetsPath + "/LastBoardData.json", potion);
+            SaveLoad.Save(board);
         }
 
         public void OnClickLoad()
         {
-            cardSelected = spriteSelected = -1;
-            cardLeft = board.mapping.cards.Length;
-            
-            var result = System.IO.File.ReadAllText(Application.streamingAssetsPath + "/LastBoardData.json");
-            board = null;
-            board = JsonUtility.FromJson<Board>(result);
+            board = SaveLoad.Load(board);
 
             int isOdd = board.mapping.x % 2;
             float scale = 1.0f / board.mapping.x;
@@ -280,8 +272,8 @@ namespace CodeFirst.Gameplay
                     }
                 }
             }
-            
-            StartCoroutine(AnimationExtention.HideBoard(board.mapping.cards));
+
+            Initialize();
 
             for (int i = 0; i < board.mapping.cards.Length; i++)
             {
