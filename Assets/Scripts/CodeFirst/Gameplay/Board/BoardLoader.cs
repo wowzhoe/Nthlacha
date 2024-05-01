@@ -224,7 +224,6 @@ namespace CodeFirst.Gameplay
         public void OnClickSave()
         {
             string potion = JsonUtility.ToJson(board);
-            Debug.Log("str : " + potion);
             System.IO.File.WriteAllText(Application.streamingAssetsPath + "/LastBoardData.json", potion);
         }
 
